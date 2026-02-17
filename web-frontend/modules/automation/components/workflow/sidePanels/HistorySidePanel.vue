@@ -17,7 +17,30 @@
         <Icon icon="iconoir-cancel" type="secondary" />
       </a>
     </div>
+
     <div class="history-side-panel__divider"></div>
+
+    <div class="history-side-panel__counts">
+      <div class="history-side-panel__counts-runs">
+        <div class="history-side-panel__counts-runs-label">
+          {{ $t('historySidePanel.successfulRuns') }}
+        </div>
+        <div class="history-side-panel__counts-runs-total">
+          {{ history.success_count }}
+        </div>
+      </div>
+      <div class="history-side-panel__counts-runs">
+        <div class="history-side-panel__counts-runs-label">
+          {{ $t('historySidePanel.failedRuns') }}
+        </div>
+        <div class="history-side-panel__counts-runs-total">
+          {{ history.fail_count }}
+        </div>
+      </div>
+    </div>
+
+    <div class="history-side-panel__divider"></div>
+
     <HistorySection
       v-for="item in workflowHistoryItems"
       :key="item.id"
@@ -31,9 +54,12 @@ import { useStore } from 'vuex'
 import HistorySection from '@baserow/modules/automation/components/workflow/sidePanels/HistorySection'
 const store = useStore()
 
+const history = computed(() => {
+  return store.getters['automationHistory/getWorkflowHistory']()
+})
+
 const workflowHistoryItems = computed(() => {
-  const history = store.getters['automationHistory/getWorkflowHistory']()
-  return history?.results || []
+  return history.value?.results || []
 })
 
 const closeHistory = () => {
