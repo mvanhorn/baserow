@@ -2,7 +2,10 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
+from baserow.api.pagination import PageNumberPagination
 from baserow.contrib.automation.models import (
+    AutomationHistory,
+    AutomationNodeHistory,
     AutomationWorkflow,
     AutomationWorkflowHistory,
 )
@@ -80,14 +83,43 @@ class OrderAutomationWorkflowsSerializer(serializers.Serializer):
     )
 
 
-class AutomationWorkflowHistorySerializer(serializers.ModelSerializer):
+class AutomationHistorySerializer(serializers.ModelSerializer):
     class Meta:
-        model = AutomationWorkflowHistory
+        model = AutomationHistory
         fields = (
             "id",
             "started_on",
             "completed_on",
-            "is_test_run",
             "message",
             "status",
         )
+
+
+class AutomationNodeHistorySerializer(AutomationHistorySerializer):
+    class Meta:
+        model = AutomationNodeHistory
+        fields = AutomationHistorySerializer.Meta.fields + (
+            "workflow_history",
+            "node",
+        )
+
+
+class AutomationWorkflowHistorySerializer(AutomationHistorySerializer):
+    node_histories = AutomationNodeHistorySerializer(read_only=True, many=True)
+
+    class Meta:
+        model = AutomationWorkflowHistory
+        fields = AutomationHistorySerializer.Meta.fields + (
+            "is_test_run",
+            "event_payload",
+            "simulate_until_node",
+            "node_histories",
+        )
+
+
+class AutomationWorkflowHistoryPagination(PageNumberPagination):
+    def get_paginated_response(self, data, *, success_count: int, fail_count: int):
+        response = super().get_paginated_response(data)
+        response.data["success_count"] = success_count
+        response.data["fail_count"] = fail_count
+        return response
