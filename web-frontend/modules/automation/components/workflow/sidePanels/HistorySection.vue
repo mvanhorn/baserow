@@ -53,7 +53,7 @@
               :key="nodeHistory.id"
               rounded
               :color="nodeHistory.status === 'error' ? 'red' : 'green'"
-              size="large"
+              size="small"
             >
               {{ nodeHistoryStatus(nodeHistory.status) }}
             </Badge>
