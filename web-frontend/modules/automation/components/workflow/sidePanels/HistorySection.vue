@@ -1,6 +1,7 @@
 <template>
   <Expandable toggle-on-click>
     <template #header="{ expanded }">
+      <div class="history-section__divider"></div>
       <div class="history-section__header">
         <Icon
           v-if="props.item.status === 'success'"
@@ -24,8 +25,40 @@
     </template>
 
     <template #default>
-      <div class="history-section__message">
+      <!-- <div class="history-section__message">
         {{ historyMessage }}
+      </div> -->
+      <div
+        v-for="nodeHistory in props.item.node_histories"
+        :key="nodeHistory.id"
+        class="history-section__node-histories"
+      >
+        <div class="history-section__node-history">
+          <div class="history-section__node-history-info">
+            <div class="history-section__node-history-icon">
+              <i :class="getNodeIconClass(nodeHistory.id)"></i>
+            </div>
+            <div
+              class="history-section__node-history-type"
+              :class="{
+                'history-section__node-history-type-error':
+                  nodeHistory.status === 'error',
+              }"
+            >
+              {{ nodeTypeLabel(nodeHistory.id) }}
+            </div>
+          </div>
+          <div class="history-section__node-history-status">
+            <Badge
+              :key="nodeHistory.id"
+              rounded
+              :color="nodeHistory.status === 'error' ? 'red' : 'green'"
+              size="large"
+            >
+              {{ nodeHistoryStatus(nodeHistory.status) }}
+            </Badge>
+          </div>
+        </div>
       </div>
     </template>
   </Expandable>
@@ -34,6 +67,8 @@
 <script setup>
 import moment from '@baserow/modules/core/moment'
 import { getUserTimeZone } from '@baserow/modules/core/utils/date'
+import { useStore } from 'vuex'
+
 const app = useNuxtApp()
 
 const props = defineProps({
@@ -42,6 +77,10 @@ const props = defineProps({
     required: true,
   },
 })
+
+const store = useStore()
+const workflow = inject('workflow')
+const automation = inject('automation')
 
 const statusTitle = computed(() => {
   switch (props.item.status) {
@@ -54,12 +93,49 @@ const statusTitle = computed(() => {
   }
 })
 
+const getNode = (nodeId) => {
+  return store.getters['automationWorkflowNode/findById'](
+    workflow.value,
+    nodeId
+  )
+}
+const getNodeType = (nodeId) => {
+  console.log('getting nodeId: ', nodeId)
+  return app.$registry.get('node', getNode(nodeId).type)
+}
+
+const getNodeIconClass = (nodeId) => {
+  const nodeType = getNodeType(nodeId)
+  console.log('nodeType: ', nodeType)
+  return nodeType.iconClass
+}
+
+const nodeTypeLabel = (nodeId) => {
+  const nodeType = getNodeType(nodeId)
+  const node = getNode(nodeId)
+  return nodeType.getLabel({
+    automation: automation.value,
+    node: node,
+  })
+}
+
 const completedDate = computed(() => {
   return moment
     .utc(props.item.completed_on)
     .tz(getUserTimeZone())
     .format('YYYY-MM-DD HH:mm:ss')
 })
+
+const nodeHistoryStatus = (status) => {
+  switch (status) {
+    case 'success':
+      return app.$i18n.t('historySidePanel.statusSuccessBadge')
+    case 'error':
+      return app.$i18n.t('historySidePanel.statusErrorBadge')
+    default:
+      return app.$i18n.t('historySidePanel.statusErrorBadge')
+  }
+}
 
 const humanCompletedDate = computed(() => {
   return moment.utc(props.item.completed_on).tz(getUserTimeZone()).fromNow()

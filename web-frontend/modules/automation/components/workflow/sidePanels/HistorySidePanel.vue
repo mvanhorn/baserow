@@ -39,8 +39,6 @@
       </div>
     </div>
 
-    <div class="history-side-panel__divider"></div>
-
     <HistorySection
       v-for="item in workflowHistoryItems"
       :key="item.id"
