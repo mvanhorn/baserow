@@ -9,6 +9,13 @@
   color: $palette-neutral-1200;
 }
 
+.history-side-panel__divider {
+  height: 1px;
+  width: 100%;
+  background-color: $palette-neutral-200;
+  margin-bottom: 16px;
+}
+
 .history-side-panel__close-side-panel {
   color: $palette-neutral-700;
 }

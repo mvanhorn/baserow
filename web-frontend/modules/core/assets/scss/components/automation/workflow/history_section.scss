@@ -1,9 +1,8 @@
 .history-section__header {
   display: flex;
-  padding: 18px 0;
+
   gap: 10px;
   align-items: center;
-  border-top: 1px solid $palette-neutral-200;
   font-size: 14px;
   color: $palette-neutral-600;
   user-select: none;
@@ -24,4 +23,9 @@
   display: flex;
   padding: 5px 5px 5px 10px;
   margin-bottom: 10px;
+}
+
+.history-section__nodes {
+  display: flex;
+  gap: 16px;
 }
