@@ -27,12 +27,12 @@
     <template #default>
       <div
         v-for="nodeHistory in props.item.node_histories"
-        :key="nodeHistory.id"
+        :key="nodeHistory.node"
         class="history-section__node-histories"
       >
         <div class="history-section__node-history">
           <div class="history-section__node-history-icon">
-            <i :class="getNodeIconClass(nodeHistory.id)"></i>
+            <i :class="getNodeIconClass(nodeHistory.node)"></i>
           </div>
 
           <div class="history-section__node-history-info">
@@ -43,13 +43,13 @@
                   nodeHistory.status === 'error',
               }"
             >
-              {{ nodeTypeLabel(nodeHistory.id) }}
+              {{ nodeTypeLabel(nodeHistory.node) }}
             </div>
           </div>
 
           <div class="history-section__node-history-badge">
             <Badge
-              :key="nodeHistory.id"
+              :key="nodeHistory.node"
               rounded
               :color="nodeHistory.status === 'error' ? 'red' : 'green'"
               size="small"
@@ -139,6 +139,7 @@ const getNode = (nodeId) => {
 }
 const getNodeType = (nodeId) => {
   console.log('getting nodeId: ', nodeId)
+  console.log('got node: ', getNode(nodeId))
   return app.$registry.get('node', getNode(nodeId).type)
 }
 
