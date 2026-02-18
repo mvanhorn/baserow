@@ -50,7 +50,47 @@
               v-if="nodeHistory.status === 'error'"
               class="history-section__node-history-info-details"
             >
-              {{ nodeHistory.message }}
+              <div class="history-section__node-history-info-details-error">
+                {{ nodeHistory.message }}
+              </div>
+
+              <Expandable toggle-on-click>
+                <template #header="{ expanded }">
+                  <div
+                    class="history-section__node-history-info-details-expand"
+                  >
+                    <div
+                      class="history-section__node-history-info-details-expand-label"
+                    >
+                      {{
+                        expanded
+                          ? $t('historySidePanel.errorHideDetails')
+                          : $t('historySidePanel.errorShowDetails')
+                      }}
+                    </div>
+
+                    <div
+                      class="history-section__node-history-info-details-expand-icon"
+                    >
+                      <Icon
+                        :icon="
+                          expanded
+                            ? 'iconoir-nav-arrow-down'
+                            : 'iconoir-nav-arrow-right'
+                        "
+                        type="secondary"
+                      />
+                    </div>
+                  </div>
+                </template>
+                <template #default>
+                  <div
+                    class="history-section__node-history-info-details-expanded"
+                  >
+                    {{ nodeHistory.message }}
+                  </div>
+                </template>
+              </Expandable>
             </div>
           </div>
 
