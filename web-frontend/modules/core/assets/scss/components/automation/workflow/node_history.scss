@@ -1,6 +1,10 @@
 .node-history__container {
   display: flex;
   flex-direction: column;
+
+  &--child {
+    margin-left: 24px;
+  }
 }
 
 .node-history {

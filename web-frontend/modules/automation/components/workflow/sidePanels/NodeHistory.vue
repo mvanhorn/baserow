@@ -1,5 +1,8 @@
 <template>
-  <div class="node-history__container">
+  <div
+  class="node-history__container"
+  :class="{ 'node-history__container--child': nodeHistory.parent_node_id != null }"
+  >
     <div class="node-history">
       <div class="node-history__icon">
         <i :class="getNodeIconClass(nodeHistory.node)"></i>

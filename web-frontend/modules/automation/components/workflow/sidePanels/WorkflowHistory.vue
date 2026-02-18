@@ -27,7 +27,7 @@
     <template #default>
       <NodeHistory
         v-for="nodeHistory in props.item.node_histories"
-        :key="nodeHistory.node"
+        :key="nodeHistory.id"
         :node-history="nodeHistory"
       />
     </template>
