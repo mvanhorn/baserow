@@ -96,12 +96,22 @@ class AutomationHistorySerializer(serializers.ModelSerializer):
 
 
 class AutomationNodeHistorySerializer(AutomationHistorySerializer):
+    parent_node_id = serializers.SerializerMethodField()
+
     class Meta:
         model = AutomationNodeHistory
         fields = AutomationHistorySerializer.Meta.fields + (
             "workflow_history",
             "node",
+            "parent_node_id",
         )
+
+    @extend_schema_field(OpenApiTypes.INT)
+    def get_parent_node_id(self, obj):
+        parent_nodes = obj.node.get_parent_nodes()
+        if not parent_nodes:
+            return None
+        return parent_nodes[-1].id
 
 
 class AutomationWorkflowHistorySerializer(AutomationHistorySerializer):
