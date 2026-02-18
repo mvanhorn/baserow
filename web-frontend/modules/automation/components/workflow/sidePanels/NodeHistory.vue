@@ -1,7 +1,7 @@
 <template>
   <div
-  class="node-history__container"
-  :class="{ 'node-history__container--child': nodeHistory.parent_node_id != null }"
+    class="node-history__container"
+    :style="nodeDepth > 0 ? { marginLeft: nodeDepth * 24 + 'px' } : {}"
   >
     <div class="node-history">
       <div class="node-history__icon">
@@ -79,6 +79,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  nodeDepth: {
+    type: Number,
+    default: 0,
+  },
 })
 
 const store = useStore()
@@ -92,14 +96,11 @@ const getNode = (nodeId) => {
   )
 }
 const getNodeType = (nodeId) => {
-  console.log('getting nodeId: ', nodeId)
-  console.log('got node: ', getNode(nodeId))
   return app.$registry.get('node', getNode(nodeId).type)
 }
 
 const getNodeIconClass = (nodeId) => {
   const nodeType = getNodeType(nodeId)
-  console.log('nodeType: ', nodeType)
   return nodeType.iconClass
 }
 
