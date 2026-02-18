@@ -25,30 +25,36 @@
     </template>
 
     <template #default>
-      <!-- <div class="history-section__message">
-        {{ historyMessage }}
-      </div> -->
       <div
         v-for="nodeHistory in props.item.node_histories"
         :key="nodeHistory.id"
         class="history-section__node-histories"
       >
         <div class="history-section__node-history">
+          <div class="history-section__node-history-icon">
+            <i :class="getNodeIconClass(nodeHistory.id)"></i>
+          </div>
+
           <div class="history-section__node-history-info">
-            <div class="history-section__node-history-icon">
-              <i :class="getNodeIconClass(nodeHistory.id)"></i>
-            </div>
             <div
-              class="history-section__node-history-type"
+              class="history-section__node-history-info-type"
               :class="{
-                'history-section__node-history-type-error':
+                'history-section__node-history-info-type-error':
                   nodeHistory.status === 'error',
               }"
             >
               {{ nodeTypeLabel(nodeHistory.id) }}
             </div>
+
+            <div
+              v-if="nodeHistory.status === 'error'"
+              class="history-section__node-history-info-details"
+            >
+              {{ nodeHistory.message }}
+            </div>
           </div>
-          <div class="history-section__node-history-status">
+
+          <div class="history-section__node-history-badge">
             <Badge
               :key="nodeHistory.id"
               rounded
