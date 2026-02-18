@@ -27,7 +27,8 @@
 
 .history-section__node-histories {
   display: flex;
-  gap: 16px;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .history-section__node-history {
@@ -36,7 +37,7 @@
   gap: 10px;
   align-items: start;
   margin-top: 12px;
-  margin-left: 6px;
+  margin-left: 24px;
 }
 
 .history-section__node-history-icon {
@@ -48,8 +49,6 @@
 
 .history-section__node-history-info {
   display: flex;
-
-  // gap: 5px;
   align-items: start;
   flex-direction: column;
   flex: 1;
@@ -66,12 +65,19 @@
   }
 }
 
-.history-section__node-history-info-details {
-  display: flex;
-  flex-direction: column;
+.history-section__node-history-badge {
+  text-align: right;
+  font-weight: 500;
+  color: $palette-neutral-900;
 }
 
-.history-section__node-history-info-details-error {
+.history-section__node-history-error {
+  display: flex;
+  flex-direction: column;
+  margin-left: 48px;
+}
+
+.history-section__node-history-error-info {
   margin-bottom: 8px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -82,7 +88,7 @@
   line-height: 16px;
 }
 
-.history-section__node-history-info-details-expand {
+.history-section__node-history-error-expand {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -96,18 +102,12 @@
   }
 }
 
-.history-section__node-history-info-details-expanded {
+.history-section__node-history-error-expanded {
   margin-top: 5px;
   border-radius: 6px;
   padding: 10px;
   background: $palette-neutral-50;
   font-size: 11px;
   line-height: 16px;
-  color: $palette-neutral-900;
-}
-
-.history-section__node-history-badge {
-  text-align: right;
-  font-weight: 500;
   color: $palette-neutral-900;
 }
