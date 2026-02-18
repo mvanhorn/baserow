@@ -39,7 +39,7 @@
       </div>
     </div>
 
-    <HistorySection
+    <WorkflowHistory
       v-for="item in workflowHistoryItems"
       :key="item.id"
       :item="item"
@@ -49,7 +49,7 @@
 
 <script setup>
 import { useStore } from 'vuex'
-import HistorySection from '@baserow/modules/automation/components/workflow/sidePanels/HistorySection'
+import WorkflowHistory from '@baserow/modules/automation/components/workflow/sidePanels/WorkflowHistory'
 const store = useStore()
 
 const history = computed(() => {

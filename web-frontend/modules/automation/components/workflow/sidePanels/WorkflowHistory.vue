@@ -1,18 +1,18 @@
 <template>
   <Expandable toggle-on-click>
     <template #header="{ expanded }">
-      <div class="history-section__divider"></div>
-      <div class="history-section__header">
+      <div class="workflow-history__divider"></div>
+      <div class="workflow-history__header">
         <Icon
           v-if="props.item.status === 'success'"
           icon="iconoir-check-circle"
           type="success"
         />
         <Icon v-else icon="iconoir-warning-circle" type="error" />
-        <span class="history-section__header-title">
+        <span class="workflow-history__header-title">
           {{ historyTitlePrefix }}{{ statusTitle }}
         </span>
-        <span :title="completedDate" class="history-section__header-date">
+        <span :title="completedDate" class="workflow-history__header-date">
           {{ humanCompletedDate }}
         </span>
         <Icon
@@ -28,18 +28,18 @@
       <div
         v-for="nodeHistory in props.item.node_histories"
         :key="nodeHistory.node"
-        class="history-section__node-histories"
+        class="workflow-history__node-histories"
       >
-        <div class="history-section__node-history">
-          <div class="history-section__node-history-icon">
+        <div class="workflow-history__node-history">
+          <div class="workflow-history__node-history-icon">
             <i :class="getNodeIconClass(nodeHistory.node)"></i>
           </div>
 
-          <div class="history-section__node-history-info">
+          <div class="workflow-history__node-history-info">
             <div
-              class="history-section__node-history-info-type"
+              class="workflow-history__node-history-info-type"
               :class="{
-                'history-section__node-history-info-type-error':
+                'workflow-history__node-history-info-type-error':
                   nodeHistory.status === 'error',
               }"
             >
@@ -47,7 +47,7 @@
             </div>
           </div>
 
-          <div class="history-section__node-history-badge">
+          <div class="workflow-history__node-history-badge">
             <Badge
               :key="nodeHistory.node"
               rounded
@@ -61,16 +61,16 @@
 
         <div
           v-if="nodeHistory.status === 'error'"
-          class="history-section__node-history-error"
+          class="workflow-history__node-history-error"
         >
-          <div class="history-section__node-history-error-info">
+          <div class="workflow-history__node-history-error-info">
             {{ nodeHistory.message }}
           </div>
 
           <Expandable toggle-on-click>
             <template #header="{ expanded }">
-              <div class="history-section__node-history-error-expand">
-                <div class="history-section__node-history-error-expand-label">
+              <div class="workflow-history__node-history-error-expand">
+                <div class="workflow-history__node-history-error-expand-label">
                   {{
                     expanded
                       ? $t('historySidePanel.errorHideDetails')
@@ -78,7 +78,7 @@
                   }}
                 </div>
 
-                <div class="history-section__node-history-error-expand-icon">
+                <div class="workflow-history__node-history-error-expand-icon">
                   <Icon
                     :icon="
                       expanded
@@ -91,7 +91,7 @@
               </div>
             </template>
             <template #default>
-              <div class="history-section__node-history-error-expanded">
+              <div class="workflow-history__node-history-error-expanded">
                 {{ nodeHistory.message }}
               </div>
             </template>

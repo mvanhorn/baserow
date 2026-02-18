@@ -1,4 +1,4 @@
-.history-section__divider {
+.workflow-history__divider {
   height: 1px;
   width: 100%;
   background-color: $palette-neutral-200;
@@ -6,7 +6,7 @@
   margin-bottom: 16px;
 }
 
-.history-section__header {
+.workflow-history__header {
   display: flex;
   gap: 10px;
   align-items: center;
@@ -15,23 +15,23 @@
   user-select: none;
 }
 
-.history-section__header-title {
+.workflow-history__header-title {
   color: $color-neutral-900;
   font-size: 12px;
   font-weight: 500;
   flex: 1;
 }
 
-.history-section__header-date {
+.workflow-history__header-date {
   font-size: 11px;
 }
 
-.history-section__node-histories {
+.workflow-history__node-histories {
   display: flex;
   flex-direction: column;
 }
 
-.history-section__node-history {
+.workflow-history__node-history {
   display: flex;
   flex: 1;
   gap: 10px;
@@ -40,21 +40,21 @@
   margin-left: 24px;
 }
 
-.history-section__node-history-icon {
+.workflow-history__node-history-icon {
   display: flex;
   width: 14px;
   height: 14px;
   padding-top: 3px;
 }
 
-.history-section__node-history-info {
+.workflow-history__node-history-info {
   display: flex;
   align-items: start;
   flex-direction: column;
   flex: 1;
 }
 
-.history-section__node-history-info-type {
+.workflow-history__node-history-info-type {
   display: flex;
   font-size: 12px;
   line-height: 20px;
@@ -65,19 +65,19 @@
   }
 }
 
-.history-section__node-history-badge {
+.workflow-history__node-history-badge {
   text-align: right;
   font-weight: 500;
   color: $palette-neutral-900;
 }
 
-.history-section__node-history-error {
+.workflow-history__node-history-error {
   display: flex;
   flex-direction: column;
   margin-left: 48px;
 }
 
-.history-section__node-history-error-info {
+.workflow-history__node-history-error-info {
   margin-bottom: 8px;
   display: -webkit-box;
   -webkit-box-orient: vertical;
@@ -88,7 +88,7 @@
   line-height: 16px;
 }
 
-.history-section__node-history-error-expand {
+.workflow-history__node-history-error-expand {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -102,7 +102,7 @@
   }
 }
 
-.history-section__node-history-error-expanded {
+.workflow-history__node-history-error-expanded {
   margin-top: 5px;
   border-radius: 6px;
   padding: 10px;
