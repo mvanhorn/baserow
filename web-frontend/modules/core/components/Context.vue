@@ -1,14 +1,16 @@
 <template>
-  <div
-    v-auto-overflow-scroll="open && overflowScroll"
-    class="context"
-    :class="{
-      'visibility-hidden': !open || !updatedOnce,
-      'context--overflow-scroll': overflowScroll,
-    }"
-  >
-    <slot v-if="openedOnce"></slot>
-  </div>
+  <Teleport to="body">
+    <div
+      v-auto-overflow-scroll="open && overflowScroll"
+      class="context"
+      :class="{
+        'visibility-hidden': !open || !updatedOnce,
+        'context--overflow-scroll': overflowScroll,
+      }"
+    >
+      <slot v-if="openedOnce"></slot>
+    </div>
+  </Teleport>
 </template>
 
 <script>
@@ -18,11 +20,20 @@ import {
   onClickOutside,
 } from '@baserow/modules/core/utils/dom'
 
-import MoveToBody from '@baserow/modules/core/mixins/moveToBody'
-
 export default {
   name: 'Context',
-  mixins: [MoveToBody],
+  mixins: [],
+  provide() {
+    return {
+      registerMoveToBodyChild: this.registerChild,
+    }
+  },
+  inject: {
+    parentRegisterMoveToBodyChild: {
+      from: 'registerMoveToBodyChild',
+      default: null,
+    },
+  },
   props: {
     hideOnClickOutside: {
       type: Boolean,
@@ -59,6 +70,7 @@ export default {
       // If opened once, should stay in DOM to keep nested content
       openedOnce: false,
       maxHeightOffset: 10,
+      childContexts: [],
     }
   },
   methods: {
@@ -195,7 +207,7 @@ export default {
           !isElement(this.opener, target) &&
           // If the click was not inside one of the context children of this context
           // menu.
-          !this.moveToBody.children.some((child) => {
+          !this.childContexts.some((child) => {
             return isElement(child.$el, target)
           })
         ) {
@@ -212,7 +224,7 @@ export default {
           !isElement(this.$el, event.target) &&
           // If the scroll was not inside one of the context children of this context
           // menu.
-          !this.moveToBody.children.some((child) => {
+          !this.childContexts.some((child) => {
             return isElement(child.$el, target)
           })
         ) {
@@ -528,6 +540,14 @@ export default {
     isOpen() {
       return this.open
     },
+    registerChild(child) {
+      this.childContexts.push(child)
+    },
+  },
+  mounted() {
+    if (this.parentRegisterMoveToBodyChild) {
+      this.parentRegisterMoveToBodyChild(this)
+    }
   },
 }
 </script>
