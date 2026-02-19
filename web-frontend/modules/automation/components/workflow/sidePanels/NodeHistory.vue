@@ -1,39 +1,122 @@
 <template>
   <div
-    class="node-history__container"
-    :style="nodeDepth > 0 ? { marginLeft: nodeDepth * 24 + 'px' } : {}"
+    class="node-history-header"
+    :style="depth > 0 ? { marginLeft: depth * 24 + 'px' } : {}"
   >
-    <div class="node-history">
-      <div class="node-history__icon">
-        <i :class="getNodeIconClass(nodeHistory.node)"></i>
-      </div>
+    <Expandable v-if="hasChildren" toggle-on-click>
+      <template #header="{ expanded }">
+        <div class="node-history-header__row">
+          <div class="node-history-header__icon">
+            <i :class="getNodeIconClass(nodeId)"></i>
+          </div>
+          <div class="node-history-header__info">
+            <div
+              class="node-history-header__info-type"
+              :class="{
+                'node-history-header__info-type-error': status === 'error',
+              }"
+            >
+              {{ nodeTypeLabel(nodeId) }}
+              <span v-if="runLabel" class="node-history-header__info-run">{{
+                runLabel
+              }}</span>
+            </div>
+          </div>
+          <div class="node-history-header__arrow">
+            <Icon
+              :icon="
+                expanded ? 'iconoir-nav-arrow-down' : 'iconoir-nav-arrow-right'
+              "
+              type="secondary"
+            />
+          </div>
+          <div class="node-history-header__badge">
+            <Badge
+              rounded
+              :color="status === 'error' ? 'red' : 'green'"
+              size="small"
+            >
+              {{ statusLabel }}
+            </Badge>
+          </div>
+        </div>
+      </template>
+      <template #default>
+        <Expandable
+          v-for="group in childNodeHistoriesByIteration"
+          :key="group.iteration"
+          toggle-on-click
+          class="node-history-header__run-group"
+        >
+          <template #header="{ expanded }">
+            <div
+              class="node-history-header__row node-history-header__row--run"
+              :style="{ marginLeft: 48 + 'px' }"
+            >
+              <div class="node-history-header__info">
+                <span class="node-history-header__info-type">
+                  {{
+                    $t('historySidePanel.runNumber', { n: group.iteration + 1 })
+                  }}
+                </span>
+              </div>
+              <div class="node-history-header__arrow">
+                <Icon
+                  :icon="
+                    expanded
+                      ? 'iconoir-nav-arrow-down'
+                      : 'iconoir-nav-arrow-right'
+                  "
+                  type="secondary"
+                />
+              </div>
+            </div>
+          </template>
+          <template #default>
+            <NodeHistory
+              v-for="nodeHistory in group.histories"
+              :key="nodeHistory.id"
+              :node-id="nodeHistory.node"
+              :node-histories="[nodeHistory]"
+              :child-node-histories-by-parent="childNodeHistoriesByParent"
+              :depth="depth + 1"
+            />
+          </template>
+        </Expandable>
+      </template>
+    </Expandable>
 
-      <div class="node-history__info">
+    <div v-else class="node-history-header__row">
+      <div class="node-history-header__icon">
+        <i :class="getNodeIconClass(nodeId)"></i>
+      </div>
+      <div class="node-history-header__info">
         <div
-          class="node-history__info-type"
+          class="node-history-header__info-type"
           :class="{
-            'node-history__info-type-error': nodeHistory.status === 'error',
+            'node-history-header__info-type-error': status === 'error',
           }"
         >
-          {{ nodeTypeLabel(nodeHistory.node) }}
+          {{ nodeTypeLabel(nodeId) }}
+          <span v-if="runLabel" class="node-history-header__info-run">{{
+            runLabel
+          }}</span>
         </div>
       </div>
-
-      <div class="node-history__badge">
+      <div class="node-history-header__badge">
         <Badge
-          :key="nodeHistory.node"
           rounded
-          :color="nodeHistory.status === 'error' ? 'red' : 'green'"
+          :color="status === 'error' ? 'red' : 'green'"
           size="small"
         >
-          {{ nodeHistoryStatus(nodeHistory.status) }}
+          {{ statusLabel }}
         </Badge>
       </div>
     </div>
 
-    <div v-if="nodeHistory.status === 'error'" class="node-history__error">
+    <div v-if="status === 'error'" class="node-history__error">
       <div class="node-history__error-info">
-        {{ nodeHistory.message }}
+        {{ nodeHistories[0].message }}
       </div>
 
       <Expandable toggle-on-click>
@@ -61,7 +144,7 @@
         </template>
         <template #default>
           <div class="node-history__error-expanded">
-            {{ nodeHistory.message }}
+            {{ nodeHistories[0].message }}
           </div>
         </template>
       </Expandable>
@@ -75,11 +158,19 @@ import { useStore } from 'vuex'
 const app = useNuxtApp()
 
 const props = defineProps({
-  nodeHistory: {
-    type: Object,
+  nodeId: {
+    type: Number,
     required: true,
   },
-  nodeDepth: {
+  nodeHistories: {
+    type: Array,
+    default: () => [],
+  },
+  childNodeHistoriesByParent: {
+    type: Object,
+    default: () => ({}),
+  },
+  depth: {
     type: Number,
     default: 0,
   },
@@ -95,6 +186,7 @@ const getNode = (nodeId) => {
     nodeId
   )
 }
+
 const getNodeType = (nodeId) => {
   return app.$registry.get('node', getNode(nodeId).type)
 }
@@ -107,20 +199,67 @@ const getNodeIconClass = (nodeId) => {
 const nodeTypeLabel = (nodeId) => {
   const nodeType = getNodeType(nodeId)
   const node = getNode(nodeId)
-  return nodeType.getLabel({
-    automation: automation.value,
-    node: node,
-  })
+  return nodeType.getLabel({ automation: automation.value, node })
 }
 
-const nodeHistoryStatus = (status) => {
-  switch (status) {
-    case 'success':
-      return app.$i18n.t('historySidePanel.statusSuccessBadge')
-    case 'error':
-      return app.$i18n.t('historySidePanel.statusErrorBadge')
-    default:
-      return app.$i18n.t('historySidePanel.statusErrorBadge')
+const status = computed(() => {
+  if (props.nodeHistories.length === 0) return 'success'
+  return props.nodeHistories.some(
+    (nodeHistory) => nodeHistory.status === 'error'
+  )
+    ? 'error'
+    : 'success'
+})
+
+const statusLabel = computed(() => {
+  if (status.value === 'error') {
+    return app.$i18n.t('historySidePanel.statusErrorBadge')
   }
-}
+  if (status.value === 'success') {
+    return app.$i18n.t('historySidePanel.statusSuccessBadge')
+  }
+  return app.$i18n.t('historySidePanel.statusErrorBadge')
+})
+
+const runLabel = computed(() => {
+  const histories = props.nodeHistories || []
+  if (histories.length === 0) return null
+  if (histories.length === 1) {
+    const iteration = histories[0].iteration
+    if (iteration != null)
+      return app.$i18n.t('historySidePanel.runNumber', { n: iteration + 1 })
+    return null
+  }
+  return app.$i18n.t('historySidePanel.runCount', { n: histories.length })
+})
+
+const childNodeHistories = computed(
+  () => props.childNodeHistoriesByParent[props.nodeId] || []
+)
+
+const hasChildren = computed(() => childNodeHistories.value.length > 0)
+
+/**
+ * Return an array of objects with keys: iteration and histories.
+ *
+ * iteration: the run number of the current node run.
+ * histories: the child node histories for that run.
+ *
+ * This is used to group child node histories by run, so that we can show
+ * Run 1, Run 2, etc and the correct child histories for each run.
+ */
+const childNodeHistoriesByIteration = computed(() => {
+  const iterationsHistories = {}
+  for (const childHistory of childNodeHistories.value) {
+    const iteration = childHistory.iteration ?? 0
+    if (!iterationsHistories[iteration]) iterationsHistories[iteration] = []
+    iterationsHistories[iteration].push(childHistory)
+  }
+  return Object.entries(iterationsHistories)
+    .sort((a, b) => Number(a[0]) - Number(b[0]))
+    .map(([iteration, histories]) => ({
+      iteration: Number(iteration),
+      histories,
+    }))
+})
 </script>

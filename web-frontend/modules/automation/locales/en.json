@@ -106,7 +106,9 @@
     "successfulRuns": "Successful runs",
     "failedRuns": "Failed runs",
     "errorHideDetails": "Hide details",
-    "errorShowDetails": "Show details"
+    "errorShowDetails": "Show details",
+    "runNumber": "Run {n}",
+    "runCount": "{n} runs"
   },
   "nodeType": {
     "triggerDeletionError": "Triggers cannot be deleted, only replaced.",

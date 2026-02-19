@@ -26,10 +26,12 @@
 
     <template #default>
       <NodeHistory
-        v-for="nodeHistory in props.item.node_histories"
-        :key="nodeHistory.id"
-        :node-history="nodeHistory"
-        :node-depth="getNodeDepth(nodeHistory.node)"
+        v-for="nodeId in rootNodeIds"
+        :key="nodeId"
+        :node-id="nodeId"
+        :node-histories="nodeHistoriesByNode[nodeId] || []"
+        :child-node-histories-by-parent="childNodeHistoriesByParent"
+        :depth="0"
       />
     </template>
   </Expandable>
@@ -38,6 +40,7 @@
 <script setup>
 import moment from '@baserow/modules/core/moment'
 import { getUserTimeZone } from '@baserow/modules/core/utils/date'
+
 import NodeHistory from '@baserow/modules/automation/components/workflow/sidePanels/NodeHistory.vue'
 
 const app = useNuxtApp()
@@ -80,34 +83,60 @@ const historyTitlePrefix = computed(() => {
 })
 
 /**
- * Create a mapping of node IDs and their parent nodes IDs. The parent node ID
- * can be null if there is no parent.
+ * Return an array of root node IDs, e.g. nodes that do not have a parent node.
  *
- * This is used to compute the node's depth.
+ * WorkflowHistory only renders the root nodes directly via NodeHistory.
+ * NodeHistory then renders any child nodes recursively. This makes it easy
+ * to correctly nest child nodes as well as their expandable content.
  */
-const nodeParentMap = computed(() => {
-  const map = {}
-  for (const nodeHistory of props.item.node_histories || []) {
-    if (!(nodeHistory.node in map)) {
-      map[nodeHistory.node] = nodeHistory.parent_node_id
+const rootNodeIds = computed(() => {
+  const _rootNodeIds = []
+  for (const nodeHistory of props.item.node_histories) {
+    if (
+      nodeHistory.parent_node_id == null &&
+      !_rootNodeIds.includes(nodeHistory.node)
+    ) {
+      _rootNodeIds.push(nodeHistory.node)
     }
   }
-  return map
+  return _rootNodeIds
 })
 
 /**
- * Return the depth of a given node ID.
+ * Return an object where keys are node IDs and values are an array of node
+ * histories for that node.
  *
- * This is used to add the correct indentation to the node history.
- *
- * E.g. if a node has no parent, its depth is 0. If it has one parent,
- * its depth is 1, etc.
+ * This is used to show the correct histories (node status, run number) are
+ * shown in the NodeHistory.
  */
-const getNodeDepth = (nodeId) => {
-  const parentId = nodeParentMap.value[nodeId]
-  if (parentId == null) {
-    return 0
+const nodeHistoriesByNode = computed(() => {
+  const _nodeHistoriesByNode = {}
+  for (const nodeHistory of props.item.node_histories) {
+    if (!_nodeHistoriesByNode[nodeHistory.node]) {
+      _nodeHistoriesByNode[nodeHistory.node] = []
+    }
+    _nodeHistoriesByNode[nodeHistory.node].push(nodeHistory)
   }
-  return 1 + getNodeDepth(parentId)
-}
+  return _nodeHistoriesByNode
+})
+
+/**
+ * Return an object where keys are parent node IDs and values are an array
+ * of child node histories for that node.
+ *
+ * This is used to determine if a node has children, as well as the number of
+ * runs for a collection node.
+ */
+const childNodeHistoriesByParent = computed(() => {
+  const _childNodeHistoriesByParent = {}
+  for (const nodeHistory of props.item.node_histories) {
+    if (nodeHistory.parent_node_id != null) {
+      const parent = nodeHistory.parent_node_id
+      if (!_childNodeHistoriesByParent[parent])
+        _childNodeHistoriesByParent[parent] = []
+      _childNodeHistoriesByParent[parent].push(nodeHistory)
+    }
+  }
+  return _childNodeHistoriesByParent
+})
 </script>
