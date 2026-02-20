@@ -10,24 +10,30 @@
             <i :class="getNodeIconClass(nodeId)"></i>
           </div>
           <div class="node-history__header-info">
-            <div
-              class="node-history__header-info-type"
-              :class="{
-                'node-history__header-info-type-error': status === 'error',
-              }"
-            >
-              n{{ nodeId }} - {{ nodeTypeLabel(nodeId) }}
+            <div>
+              <div
+                class="node-history__header-info-type"
+                :class="{
+                  'node-history__header-info-type-error': status === 'error',
+                }"
+              >
+                n{{ nodeId }} - {{ nodeTypeLabel(nodeId) }}
+              </div>
+            </div>
+
+            <div>
+              <Icon
+                :icon="
+                  expanded
+                    ? 'iconoir-nav-arrow-down'
+                    : 'iconoir-nav-arrow-right'
+                "
+                type="secondary"
+              />
             </div>
           </div>
 
-          <div>
-            <Icon
-              :icon="
-                expanded ? 'iconoir-nav-arrow-down' : 'iconoir-nav-arrow-right'
-              "
-              type="secondary"
-            />
-          </div>
+          <div class="node-history__spacer"></div>
 
           <Badge
             rounded
@@ -95,7 +101,20 @@
         >
           n{{ nodeId }} - {{ nodeTypeLabel(nodeId) }}
         </div>
+
+        <div class="node-history__header-show-payload">
+          <a
+            ref="nodePayloadButtonContextToggle"
+            role="button"
+            :title="$t('workflowNode.nodeOptions')"
+            @click="openNodePayloadButtonContext()"
+          >
+            <i class="baserow-icon-more-vertical"></i>
+          </a>
+        </div>
       </div>
+
+      <div class="node-history__spacer"></div>
 
       <Badge rounded :color="status === 'error' ? 'red' : 'green'" size="small">
         {{ statusLabel }}
@@ -137,11 +156,33 @@
         </template>
       </Expandable>
     </div>
+
+    <!-- TODO: find a better way to show button pop-up to avoid background overlap. -->
+    <Context ref="nodePayloadButtonContext">
+      <Button
+        ref="nodePayloadContextToggle"
+        type="secondary"
+        full-width
+        icon="iconoir-code-brackets node-history__show-payload-button-icon"
+        @click="showNodePayloadModal"
+      >
+        Show Payload
+      </Button>
+    </Context>
+
+    <SampleDataModal
+      ref="nodePayloadModal"
+      :sample-data="nodeHistories[0].payload"
+      :title="nodeTypeLabel(nodeId)"
+    />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useStore } from 'vuex'
+
+import SampleDataModal from '@baserow/modules/automation/components/sidebar/SampleDataModal'
 
 const app = useNuxtApp()
 
@@ -167,6 +208,10 @@ const props = defineProps({
 const store = useStore()
 const workflow = inject('workflow')
 const automation = inject('automation')
+
+const nodePayloadButtonContext = ref(null)
+const nodePayloadButtonContextToggle = ref(null)
+const nodePayloadModal = ref(null)
 
 const getNode = (nodeId) => {
   return store.getters['automationWorkflowNode/findById'](
@@ -238,4 +283,19 @@ const childNodeHistoriesByIteration = computed(() => {
       histories,
     }))
 })
+
+const openNodePayloadButtonContext = () => {
+  if (nodePayloadButtonContext.value && nodePayloadButtonContextToggle.value) {
+    nodePayloadButtonContext.value.toggle(
+      nodePayloadButtonContextToggle.value,
+      'bottom',
+      'left',
+      0
+    )
+  }
+}
+
+const showNodePayloadModal = () => {
+  nodePayloadModal.value.show()
+}
 </script>

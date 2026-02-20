@@ -17,8 +17,8 @@
   }
 
   &-info {
-    flex: 1;
-    min-width: 0;
+    display: flex;
+    gap: 4px;
 
     &-type {
       font-size: 12px;
@@ -30,6 +30,17 @@
       }
     }
   }
+
+  &-show-payload {
+    display: flex;
+    align-self: center;
+    width: 16px;
+    height: 16px;
+  }
+}
+
+.node-history__spacer {
+  flex: 1;
 }
 
 .node-history__error {
@@ -71,4 +82,8 @@
   font-size: 11px;
   line-height: 16px;
   color: $palette-neutral-900;
+}
+
+.node-history__show-payload-button-icon {
+  color: $palette-neutral-600;
 }
