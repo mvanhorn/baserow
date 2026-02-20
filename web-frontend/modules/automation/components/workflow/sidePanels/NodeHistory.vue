@@ -16,10 +16,7 @@
                 'node-history__header-info-type-error': status === 'error',
               }"
             >
-              {{ nodeTypeLabel(nodeId) }}
-              <span v-if="runLabel" class="node-history__header-info-run">
-                {{ runLabel }}
-              </span>
+              n{{nodeId}} - {{ nodeTypeLabel(nodeId) }}
             </div>
           </div>
 
@@ -96,10 +93,7 @@
             'node-history__header-info-type-error': status === 'error',
           }"
         >
-          {{ nodeTypeLabel(nodeId) }}
-          <span v-if="runLabel" class="node-history__header-info-run">{{
-            runLabel
-          }}</span>
+          n{{nodeId}} - {{ nodeTypeLabel(nodeId) }}
         </div>
       </div>
 
@@ -213,18 +207,6 @@ const statusLabel = computed(() => {
     return app.$i18n.t('historySidePanel.statusSuccessBadge')
   }
   return app.$i18n.t('historySidePanel.statusErrorBadge')
-})
-
-const runLabel = computed(() => {
-  const histories = props.nodeHistories || []
-  if (histories.length === 0) return null
-  if (histories.length === 1) {
-    const iteration = histories[0].iteration
-    if (iteration != null)
-      return app.$i18n.t('historySidePanel.runNumber', { n: iteration + 1 })
-    return null
-  }
-  return app.$i18n.t('historySidePanel.runCount', { n: histories.length })
 })
 
 const childNodeHistories = computed(
