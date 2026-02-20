@@ -1,28 +1,29 @@
 <template>
   <div
-    class="node-history-header"
+    class="node-history__header"
     :style="depth > 0 ? { marginLeft: depth * 24 + 'px' } : {}"
   >
     <Expandable v-if="hasChildren" toggle-on-click>
       <template #header="{ expanded }">
-        <div class="node-history-header__row">
-          <div class="node-history-header__icon">
+        <div class="node-history__header-row">
+          <div class="node-history__header-icon">
             <i :class="getNodeIconClass(nodeId)"></i>
           </div>
-          <div class="node-history-header__info">
+          <div class="node-history__header-info">
             <div
-              class="node-history-header__info-type"
+              class="node-history__header-info-type"
               :class="{
-                'node-history-header__info-type-error': status === 'error',
+                'node-history__header-info-type-error': status === 'error',
               }"
             >
               {{ nodeTypeLabel(nodeId) }}
-              <span v-if="runLabel" class="node-history-header__info-run">{{
-                runLabel
-              }}</span>
+              <span v-if="runLabel" class="node-history__header-info-run">
+                {{ runLabel }}
+              </span>
             </div>
           </div>
-          <div class="node-history-header__arrow">
+
+          <div>
             <Icon
               :icon="
                 expanded ? 'iconoir-nav-arrow-down' : 'iconoir-nav-arrow-right'
@@ -30,15 +31,14 @@
               type="secondary"
             />
           </div>
-          <div class="node-history-header__badge">
-            <Badge
-              rounded
-              :color="status === 'error' ? 'red' : 'green'"
-              size="small"
-            >
-              {{ statusLabel }}
-            </Badge>
-          </div>
+
+          <Badge
+            rounded
+            :color="status === 'error' ? 'red' : 'green'"
+            size="small"
+          >
+            {{ statusLabel }}
+          </Badge>
         </div>
       </template>
       <template #default>
@@ -46,21 +46,20 @@
           v-for="group in childNodeHistoriesByIteration"
           :key="group.iteration"
           toggle-on-click
-          class="node-history-header__run-group"
         >
           <template #header="{ expanded }">
             <div
-              class="node-history-header__row node-history-header__row--run"
+              class="node-history__header-row"
               :style="{ marginLeft: 48 + 'px' }"
             >
-              <div class="node-history-header__info">
-                <span class="node-history-header__info-type">
+              <div class="node-history__header-info">
+                <span class="node-history__header-info-type">
                   {{
                     $t('historySidePanel.runNumber', { n: group.iteration + 1 })
                   }}
                 </span>
               </div>
-              <div class="node-history-header__arrow">
+              <div>
                 <Icon
                   :icon="
                     expanded
@@ -86,32 +85,27 @@
       </template>
     </Expandable>
 
-    <div v-else class="node-history-header__row">
-      <div class="node-history-header__icon">
+    <div v-else class="node-history__header-row">
+      <div class="node-history__header-icon">
         <i :class="getNodeIconClass(nodeId)"></i>
       </div>
-      <div class="node-history-header__info">
+      <div class="node-history__header-info">
         <div
-          class="node-history-header__info-type"
+          class="node-history__header-info-type"
           :class="{
-            'node-history-header__info-type-error': status === 'error',
+            'node-history__header-info-type-error': status === 'error',
           }"
         >
           {{ nodeTypeLabel(nodeId) }}
-          <span v-if="runLabel" class="node-history-header__info-run">{{
+          <span v-if="runLabel" class="node-history__header-info-run">{{
             runLabel
           }}</span>
         </div>
       </div>
-      <div class="node-history-header__badge">
-        <Badge
-          rounded
-          :color="status === 'error' ? 'red' : 'green'"
-          size="small"
-        >
-          {{ statusLabel }}
-        </Badge>
-      </div>
+
+      <Badge rounded :color="status === 'error' ? 'red' : 'green'" size="small">
+        {{ statusLabel }}
+      </Badge>
     </div>
 
     <div v-if="status === 'error'" class="node-history__error">
@@ -130,7 +124,7 @@
               }}
             </div>
 
-            <div class="node-history__error-expand-icon">
+            <div>
               <Icon
                 :icon="
                   expanded
