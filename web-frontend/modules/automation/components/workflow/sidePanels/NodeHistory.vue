@@ -1,7 +1,7 @@
 <template>
   <div
     class="node-history__header"
-    :style="depth > 0 ? { marginLeft: depth * 24 + 'px' } : {}"
+    :style="depth > 0 ? { marginLeft: '24px' } : {}"
   >
     <Expandable v-if="hasChildren" toggle-on-click>
       <template #header="{ expanded }">
