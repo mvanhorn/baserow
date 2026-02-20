@@ -98,6 +98,7 @@ class AutomationHistorySerializer(serializers.ModelSerializer):
 class AutomationNodeHistorySerializer(AutomationHistorySerializer):
     parent_node_id = serializers.SerializerMethodField()
     iteration = serializers.SerializerMethodField()
+    payload = serializers.SerializerMethodField()
 
     class Meta:
         model = AutomationNodeHistory
@@ -106,6 +107,7 @@ class AutomationNodeHistorySerializer(AutomationHistorySerializer):
             "node",
             "parent_node_id",
             "iteration",
+            "payload",
         )
 
     @extend_schema_field(OpenApiTypes.INT)
@@ -119,6 +121,33 @@ class AutomationNodeHistorySerializer(AutomationHistorySerializer):
     def get_iteration(self, obj):
         result = obj.node_results.first()
         return result.iteration if result else None
+
+    def get_payload(self, obj):
+        # TODO: optimize the n+1 queries
+        previous_node = (
+            obj.node.get_previous_nodes()[-1] if obj.node.get_previous_nodes() else None
+        )
+
+        # if trigger, return the workflow's event_payload
+        if not previous_node:
+            # TODO: for periodic trigger, there is no payload. Maybe we should return
+            # the sample data?
+            return obj.workflow_history.event_payload
+
+        # if node, return previous node's result
+        prev_node_history = previous_node.node_histories.filter(
+            workflow_history=obj.workflow_history
+        ).first()
+        if not prev_node_history:
+            return {}
+
+        current_result = obj.node_results.first()
+        current_iteration = current_result.iteration if current_result else 0
+
+        prev_result = prev_node_history.node_results.filter(
+            iteration=current_iteration
+        ).first()
+        return prev_result.result if prev_result else {}
 
 
 class AutomationWorkflowHistorySerializer(AutomationHistorySerializer):

@@ -10,7 +10,7 @@
         />
         <Icon v-else icon="iconoir-warning-circle" type="error" />
         <span class="workflow-history__header-title">
-          {{ historyTitlePrefix }}{{ statusTitle }}
+          h{{ item.id }} {{ historyTitlePrefix }}{{ statusTitle }}
         </span>
         <span :title="completedDate" class="workflow-history__header-date">
           {{ humanCompletedDate }}

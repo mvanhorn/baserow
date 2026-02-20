@@ -16,7 +16,7 @@
                 'node-history__header-info-type-error': status === 'error',
               }"
             >
-              n{{nodeId}} - {{ nodeTypeLabel(nodeId) }}
+              n{{ nodeId }} - {{ nodeTypeLabel(nodeId) }}
             </div>
           </div>
 
@@ -93,7 +93,7 @@
             'node-history__header-info-type-error': status === 'error',
           }"
         >
-          n{{nodeId}} - {{ nodeTypeLabel(nodeId) }}
+          n{{ nodeId }} - {{ nodeTypeLabel(nodeId) }}
         </div>
       </div>
 
