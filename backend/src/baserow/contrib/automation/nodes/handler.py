@@ -29,7 +29,7 @@ from baserow.contrib.automation.nodes.node_types import (
 )
 from baserow.contrib.automation.nodes.registries import automation_node_type_registry
 from baserow.contrib.automation.nodes.signals import automation_node_updated
-from baserow.contrib.automation.nodes.tasks import dispatch_node_celery_task
+from baserow.contrib.automation.nodes.tasks import dispatch_node_celery_task_async
 from baserow.contrib.automation.nodes.types import AutomationNodeDict
 from baserow.core.cache import local_cache
 from baserow.core.db import specific_iterator
@@ -518,7 +518,7 @@ class AutomationNodeHandler(metaclass=baserow_trace_methods(tracer)):
                 if simulation_completed:
                     return True
             else:
-                dispatch_node_celery_task.delay(
+                dispatch_node_celery_task_async.delay(
                     next_node.id,
                     history_id,
                     current_iterations=current_iterations,

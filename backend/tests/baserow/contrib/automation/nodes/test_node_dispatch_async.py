@@ -134,7 +134,7 @@ def create_workflow_history(data_fixture, workflow, trigger_table_fields):
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_service_error(mock_dispatch_task, data_fixture):
     user = data_fixture.create_user()
     trigger_node = data_fixture.create_local_baserow_rows_created_trigger_node(
@@ -168,7 +168,7 @@ def test_dispatch_node_service_error(mock_dispatch_task, data_fixture):
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 @patch(f"{TRIGGER_NODE_TYPE_PATH}.dispatch")
 @patch(f"{NODE_HANDLER_PATH}.logger")
 def test_dispatch_node_unexpected_error(
@@ -201,7 +201,7 @@ def test_dispatch_node_unexpected_error(
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_trigger(mock_dispatch_task, data_fixture):
     data = create_workflow(data_fixture)
     trigger_node = data["trigger_node"]
@@ -233,7 +233,7 @@ def test_dispatch_node_dispatches_trigger(mock_dispatch_task, data_fixture):
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_action_create_row(mock_dispatch_task, data_fixture):
     data = create_workflow(data_fixture)
     trigger_node = data["trigger_node"]
@@ -293,7 +293,7 @@ def test_dispatch_node_dispatches_action_create_row(mock_dispatch_task, data_fix
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_iterator_children(mock_dispatch_task, data_fixture):
     data = data_fixture.iterator_graph_fixture()
     trigger_node = data["trigger_node"]
@@ -388,7 +388,7 @@ def test_dispatch_node_dispatches_iterator_children(mock_dispatch_task, data_fix
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 @patch(f"{NODE_HANDLER_PATH}.automation_node_updated")
 def test_dispatch_node_dispatches_trigger_simulation(
     mock_automation_node_updated,
@@ -451,7 +451,7 @@ def test_dispatch_node_dispatches_trigger_simulation(
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 @patch(f"{NODE_HANDLER_PATH}.automation_node_updated")
 def test_dispatch_node_dispatches_action_simulation(
     mock_automation_node_updated,
@@ -538,7 +538,7 @@ def test_dispatch_node_dispatches_action_simulation(
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 @patch(f"{NODE_HANDLER_PATH}.automation_node_updated")
 def test_dispatch_node_dispatches_iterator_simulation(
     mock_automation_node_updated,
@@ -600,7 +600,7 @@ def test_dispatch_node_dispatches_iterator_simulation(
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_test_run(
     mock_dispatch_task,
     data_fixture,
@@ -680,7 +680,7 @@ def test_dispatch_node_dispatches_test_run(
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_action_update_row(mock_dispatch_task, data_fixture):
     data = create_workflow(
         data_fixture,
@@ -737,7 +737,7 @@ def test_dispatch_node_dispatches_action_update_row(mock_dispatch_task, data_fix
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_action_delete_row(mock_dispatch_task, data_fixture):
     data = create_workflow(
         data_fixture,
@@ -781,7 +781,7 @@ def test_dispatch_node_dispatches_action_delete_row(mock_dispatch_task, data_fix
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 def test_dispatch_node_dispatches_action_router(mock_dispatch_task, data_fixture):
     data = create_workflow(
         data_fixture,
@@ -952,7 +952,7 @@ def test_dispatch_node_with_advanced_formulas(data_fixture):
 
 
 @pytest.mark.django_db
-@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task")
+@patch(f"{NODE_HANDLER_PATH}.dispatch_node_celery_task_async")
 @patch(f"{NODE_HANDLER_PATH}.automation_node_updated")
 def test_dispatch_node_dispatches_router_edge_simulation(
     mock_automation_node_updated,

@@ -26,7 +26,7 @@ from baserow.contrib.automation.models import Automation
 from baserow.contrib.automation.nodes.handler import AutomationNodeHandler
 from baserow.contrib.automation.nodes.models import AutomationNode
 from baserow.contrib.automation.nodes.signals import automation_node_updated
-from baserow.contrib.automation.nodes.tasks import dispatch_node_celery_task
+from baserow.contrib.automation.nodes.tasks import dispatch_node_celery_task_async
 from baserow.contrib.automation.nodes.types import AutomationNodeDict
 from baserow.contrib.automation.types import AutomationWorkflowDict
 from baserow.contrib.automation.workflows.constants import (
@@ -1009,7 +1009,7 @@ class AutomationWorkflowHandler(metaclass=baserow_trace_methods(tracer)):
             history.save()
             return
 
-        dispatch_node_celery_task.delay(
+        dispatch_node_celery_task_async.delay(
             workflow.get_trigger().id,
             history.id,
         )

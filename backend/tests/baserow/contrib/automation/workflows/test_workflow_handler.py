@@ -943,7 +943,7 @@ def test_clear_old_history_keeps_entries(data_fixture):
 
 @pytest.mark.django_db
 @patch(f"{WORKFLOWS_MODULE}.handler.AutomationWorkflowHandler.before_run")
-@patch("baserow.contrib.automation.nodes.tasks.dispatch_node_celery_task")
+@patch("baserow.contrib.automation.nodes.tasks.dispatch_node_celery_task_async")
 def test_start_workflow_too_many_errors(
     mock_dispatch_task, mock_before_run, data_fixture
 ):
@@ -983,7 +983,7 @@ def test_start_workflow_too_many_errors(
 
 @pytest.mark.django_db
 @patch(f"{WORKFLOWS_MODULE}.handler.AutomationWorkflowHandler.before_run")
-@patch("baserow.contrib.automation.nodes.tasks.dispatch_node_celery_task")
+@patch("baserow.contrib.automation.nodes.tasks.dispatch_node_celery_task_async")
 def test_start_workflow_before_run_error(
     mock_dispatch_task, mock_before_run, data_fixture
 ):
