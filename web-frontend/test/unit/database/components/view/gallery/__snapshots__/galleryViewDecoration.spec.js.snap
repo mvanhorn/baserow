@@ -109,6 +109,16 @@ exports[`GalleryView component with decoration > Default component with first_ce
       
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;
 
@@ -223,6 +233,16 @@ exports[`GalleryView component with decoration > Default component with row wrap
       
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;
 
@@ -329,5 +349,15 @@ exports[`GalleryView component with decoration > Default component with unavaila
       
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;

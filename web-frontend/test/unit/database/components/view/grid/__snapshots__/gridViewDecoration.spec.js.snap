@@ -38,6 +38,15 @@ exports[`GridView component with decoration > Default component with first_cell 
             <i
               class="grid-view__head-row-identifier-dropdown iconoir-numbered-list-left"
             />
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -162,6 +171,15 @@ exports[`GridView component with decoration > Default component with first_cell 
       />
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
   <div
     class="grid-view__divider"
     style="left: 72px;"
@@ -226,6 +244,15 @@ exports[`GridView component with decoration > Default component with first_cell 
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -271,6 +298,15 @@ exports[`GridView component with decoration > Default component with first_cell 
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -316,6 +352,15 @@ exports[`GridView component with decoration > Default component with first_cell 
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -334,6 +379,15 @@ exports[`GridView component with decoration > Default component with first_cell 
               class="grid-view__add-column-icon iconoir-plus"
             />
           </a>
+          <teleport-stub
+            to="body"
+          >
+            <div
+              class="field-context context visibility-hidden"
+            >
+              <!--v-if-->
+            </div>
+          </teleport-stub>
         </div>
       </div>
       <div
@@ -455,6 +509,15 @@ exports[`GridView component with decoration > Default component with first_cell 
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -471,6 +534,15 @@ exports[`GridView component with decoration > Default component with first_cell 
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -487,6 +559,15 @@ exports[`GridView component with decoration > Default component with first_cell 
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -518,6 +599,20 @@ exports[`GridView component with decoration > Default component with first_cell 
       style="width: 672px; top: 0px;"
     />
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;
 
@@ -559,6 +654,15 @@ exports[`GridView component with decoration > Default component with row wrapper
             <i
               class="grid-view__head-row-identifier-dropdown iconoir-numbered-list-left"
             />
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -685,6 +789,15 @@ exports[`GridView component with decoration > Default component with row wrapper
       />
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
   <div
     class="grid-view__divider"
     style="left: 72px;"
@@ -749,6 +862,15 @@ exports[`GridView component with decoration > Default component with row wrapper
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -794,6 +916,15 @@ exports[`GridView component with decoration > Default component with row wrapper
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -839,6 +970,15 @@ exports[`GridView component with decoration > Default component with row wrapper
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -857,6 +997,15 @@ exports[`GridView component with decoration > Default component with row wrapper
               class="grid-view__add-column-icon iconoir-plus"
             />
           </a>
+          <teleport-stub
+            to="body"
+          >
+            <div
+              class="field-context context visibility-hidden"
+            >
+              <!--v-if-->
+            </div>
+          </teleport-stub>
         </div>
       </div>
       <div
@@ -986,6 +1135,15 @@ exports[`GridView component with decoration > Default component with row wrapper
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -1002,6 +1160,15 @@ exports[`GridView component with decoration > Default component with row wrapper
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -1018,6 +1185,15 @@ exports[`GridView component with decoration > Default component with row wrapper
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -1049,6 +1225,20 @@ exports[`GridView component with decoration > Default component with row wrapper
       style="width: 672px; top: 0px;"
     />
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;
 
@@ -1090,6 +1280,15 @@ exports[`GridView component with decoration > Default component with unavailable
             <i
               class="grid-view__head-row-identifier-dropdown iconoir-numbered-list-left"
             />
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -1208,6 +1407,15 @@ exports[`GridView component with decoration > Default component with unavailable
       />
     </div>
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
   <div
     class="grid-view__divider"
     style="left: 72px;"
@@ -1272,6 +1480,15 @@ exports[`GridView component with decoration > Default component with unavailable
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -1317,6 +1534,15 @@ exports[`GridView component with decoration > Default component with unavailable
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -1362,6 +1588,15 @@ exports[`GridView component with decoration > Default component with unavailable
                 />
               </a>
             </span>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden context--overflow-scroll"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
             <div
               class="grid-view__description-width"
             />
@@ -1380,6 +1615,15 @@ exports[`GridView component with decoration > Default component with unavailable
               class="grid-view__add-column-icon iconoir-plus"
             />
           </a>
+          <teleport-stub
+            to="body"
+          >
+            <div
+              class="field-context context visibility-hidden"
+            >
+              <!--v-if-->
+            </div>
+          </teleport-stub>
         </div>
       </div>
       <div
@@ -1501,6 +1745,15 @@ exports[`GridView component with decoration > Default component with unavailable
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -1517,6 +1770,15 @@ exports[`GridView component with decoration > Default component with unavailable
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         <div
@@ -1533,6 +1795,15 @@ exports[`GridView component with decoration > Default component with unavailable
               />
                common.summarize
             </div>
+            <teleport-stub
+              to="body"
+            >
+              <div
+                class="context visibility-hidden"
+              >
+                <!--v-if-->
+              </div>
+            </teleport-stub>
           </div>
         </div>
         
@@ -1564,5 +1835,19 @@ exports[`GridView component with decoration > Default component with unavailable
       style="width: 672px; top: 0px;"
     />
   </div>
+  <teleport-stub
+    to="body"
+  >
+    <div
+      class="context visibility-hidden context--overflow-scroll"
+    >
+      <!--v-if-->
+    </div>
+  </teleport-stub>
+  <teleport-stub
+    to="body"
+  >
+    <!--v-if-->
+  </teleport-stub>
 </div>
 `;
