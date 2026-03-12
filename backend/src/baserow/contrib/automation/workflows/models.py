@@ -51,8 +51,6 @@ class AutomationWorkflow(
     GraphModelMixin,
     WithRegistry,
 ):
-    supports_edges = True
-
     automation = models.ForeignKey(
         "automation.Automation", on_delete=models.CASCADE, related_name="workflows"
     )

@@ -50,6 +50,7 @@ from baserow.contrib.builder.elements.registries import element_type_registry
 from baserow.contrib.builder.elements.service import ElementService
 from baserow.contrib.builder.pages.exceptions import PageDoesNotExist
 from baserow.contrib.builder.pages.handler import PageHandler
+from baserow.core.graph.exceptions import GraphPointReferencePointInvalid
 
 
 class ElementsView(APIView):
@@ -145,6 +146,7 @@ class ElementsView(APIView):
             ElementDoesNotExist: ERROR_ELEMENT_DOES_NOT_EXIST,
             ElementNotInSamePage: ERROR_ELEMENT_NOT_IN_SAME_PAGE,
             ElementTypeDeactivated: ERROR_ELEMENT_TYPE_DEACTIVATED,
+            GraphPointReferencePointInvalid: ERROR_ELEMENT_DOES_NOT_EXIST,
         }
     )
     @validate_body_custom_fields(
@@ -156,13 +158,9 @@ class ElementsView(APIView):
         type_name = data.pop("type")
         page = PageHandler().get_page(page_id)
 
-        before_id = data.pop("before_id", None)
-        before = ElementHandler().get_element(before_id) if before_id else None
-
         element_type = element_type_registry.get(type_name)
-
         element = ElementService().create_element(
-            request.user, element_type, page, before=before, **data
+            request.user, element_type, page, **data
         )
 
         serializer = element_type_registry.get_serializer(element, ElementSerializer)
@@ -319,35 +317,19 @@ class MoveElementView(APIView):
         {
             ElementDoesNotExist: ERROR_ELEMENT_DOES_NOT_EXIST,
             ElementNotInSamePage: ERROR_ELEMENT_NOT_IN_SAME_PAGE,
+            GraphPointReferencePointInvalid: ERROR_ELEMENT_DOES_NOT_EXIST,
         }
     )
     @validate_body(MoveElementSerializer)
     def patch(self, request, data: Dict, element_id: int):
         """
-        Moves the element in the page before another element or at the end of
-        the page if no before element is given.
+        Moves an `element` relative to the provided `reference_element` and `position`.
         """
 
         element = ElementHandler().get_element_for_update(element_id)
-
-        before_id = data.get("before_id", None)
-        parent_element_id = data.get("parent_element_id", element.parent_element_id)
-        place_in_container = data.get("place_in_container", element.place_in_container)
-
-        before = None
-        if before_id is not None:
-            before = ElementHandler().get_element(before_id)
-
-        parent_element = None
-        if parent_element_id is not None:
-            parent_element = ElementHandler().get_element(parent_element_id)
-
-        moved_element = ElementService().move_element(
-            request.user, element, parent_element, place_in_container, before
-        )
-
+        element_move = ElementService().move_element(request.user, element, **data)
         serializer = element_type_registry.get_serializer(
-            moved_element, ElementSerializer
+            element_move.element, ElementSerializer
         )
         return Response(serializer.data)
 
