@@ -1,19 +1,10 @@
-from asgiref.sync import sync_to_async
-from rest_framework.response import Response
-from starlette.status import HTTP_204_NO_CONTENT
+import json
 
-from baserow.contrib.database.mcp.table.utils import (
-    get_all_tables,
-    get_table_row_serializer,
-    remove_table_no_permission,
-    table_in_workspace_of_endpoint,
-)
-from baserow.contrib.database.rows.operations import UpdateDatabaseRowOperationType
-from baserow.contrib.database.table.operations import (
-    CreateRowDatabaseTableOperationType,
-)
+from asgiref.sync import sync_to_async
+
+from baserow.contrib.database import services
+from baserow.contrib.database.table.models import Table
 from baserow.core.mcp.registries import MCPTool
-from baserow.core.mcp.utils import internal_api_request, serializer_to_openapi_inline
 
 
 class ListRowsMcpTool(MCPTool):
@@ -26,30 +17,27 @@ class ListRowsMcpTool(MCPTool):
         return [
             Tool(
                 name=self.name,
-                description=f"Lists the rows/records of the provided `table_id`.",
+                description="List rows from a table with optional search and pagination.",
                 inputSchema={
                     "type": "object",
                     "properties": {
                         "table_id": {
                             "type": "integer",
-                            "description": "The ID of the table where to list the "
-                            "rows from.",
+                            "description": "The ID of the table to list rows from.",
                         },
                         "search": {
                             "type": "string",
-                            "description": "Optionally search in the whole table.",
+                            "description": "Optional search term to filter rows.",
                         },
                         "page": {
                             "type": "integer",
                             "default": 1,
-                            "description": "Rows/records are paginated. Provide "
-                            "if a different page should be fetched.",
+                            "description": "Page number (1-based).",
                         },
                         "size": {
                             "type": "integer",
                             "default": 100,
-                            "description": "Maximum rows/records that must be "
-                            "returned.",
+                            "description": "Maximum number of rows to return.",
                         },
                     },
                     "required": ["table_id"],
@@ -57,168 +45,31 @@ class ListRowsMcpTool(MCPTool):
             )
         ]
 
-    async def call(
-        self,
-        endpoint,
-        name,
-        name_parameters,
-        call_arguments,
-    ):
+    async def call(self, endpoint, call_arguments):
         from mcp.types import TextContent
 
-        table_id = call_arguments["table_id"]
-        if not await sync_to_async(table_in_workspace_of_endpoint)(endpoint, table_id):
-            return [TextContent(type="text", text="Table not in endpoint workspace.")]
-
-        search = call_arguments.get("search", "")
-        page = call_arguments.get("page", 1)
-        size = call_arguments.get("size", 100)
-
-        response: Response = await sync_to_async(internal_api_request)(
-            "api:database:rows:list",
-            path_params={"table_id": table_id},
-            user=endpoint.user,
-            query_params={
-                "user_field_names": "true",
-                "search": search,
-                "page": page,
-                "size": size,
-            },
-        )
-
-        return [TextContent(type="text", text=response.content)]
-
-
-class CreateRowMcpTool(MCPTool):
-    type = "create_table_row"
-    name = "create_row_table_{id}"
-
-    async def list(self, endpoint):
-        from mcp import Tool
-
-        tables = await sync_to_async(get_all_tables)(endpoint)
-        tables = await sync_to_async(remove_table_no_permission)(
-            endpoint, tables, CreateRowDatabaseTableOperationType
-        )
-
-        tools = []
-        for table in tables:
-            validation_serializer = await sync_to_async(get_table_row_serializer)(table)
-            spec = serializer_to_openapi_inline(
-                validation_serializer, "POST", "request"
+        try:
+            result = await sync_to_async(services.list_rows)(
+                endpoint.user,
+                endpoint.workspace,
+                call_arguments["table_id"],
+                search=call_arguments.get("search", ""),
+                page=call_arguments.get("page", 1),
+                size=call_arguments.get("size", 100),
             )
-
-            tools.append(
-                Tool(
-                    name=self.resolve_name(id=table.id),
-                    description=f"Create a new row/record in table with id {table.id}, "
-                    f'named "{table.name}".',
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "row": spec,
-                        },
-                        "required": ["row"],
-                    },
+            return [TextContent(type="text", text=json.dumps(result))]
+        except Table.DoesNotExist:
+            return [
+                TextContent(
+                    type="text",
+                    text="Table not found or not in endpoint workspace.",
                 )
-            )
-        return tools
-
-    async def call(
-        self,
-        endpoint,
-        name,
-        name_parameters,
-        call_arguments,
-    ):
-        from mcp.types import TextContent
-
-        table_id = name_parameters["id"]
-        if not await sync_to_async(table_in_workspace_of_endpoint)(endpoint, table_id):
-            return [TextContent(type="text", text="Table not in endpoint workspace.")]
-
-        response: Response = await sync_to_async(internal_api_request)(
-            "api:database:rows:list",
-            method="POST",
-            path_params={"table_id": name_parameters["id"]},
-            user=endpoint.user,
-            data=call_arguments["row"],
-            query_params={"user_field_names": "true"},
-        )
-
-        return [TextContent(type="text", text=response.content)]
+            ]
 
 
-class UpdateRowMcpTool(MCPTool):
-    type = "update_table_row"
-    name = "update_row_table_{id}"
-
-    async def list(self, endpoint):
-        from mcp import Tool
-
-        tables = await sync_to_async(get_all_tables)(endpoint)
-        tables = await sync_to_async(remove_table_no_permission)(
-            endpoint, tables, UpdateDatabaseRowOperationType
-        )
-
-        tools = []
-        for table in tables:
-            validation_serializer = await sync_to_async(get_table_row_serializer)(table)
-            spec = serializer_to_openapi_inline(
-                validation_serializer, "PATCH", "request"
-            )
-
-            tools.append(
-                Tool(
-                    name=self.resolve_name(id=table.id),
-                    description=f"Updates an existing row/record in table with id"
-                    f' {table.id}, named "{table.name}".',
-                    inputSchema={
-                        "type": "object",
-                        "properties": {
-                            "id": {
-                                "type": "integer",
-                                "description": "The row/record ID that must be updated.",
-                            },
-                            "row": spec,
-                        },
-                        "required": ["id", "row"],
-                    },
-                )
-            )
-        return tools
-
-    async def call(
-        self,
-        endpoint,
-        name,
-        name_parameters,
-        call_arguments,
-    ):
-        from mcp.types import TextContent
-
-        table_id = name_parameters["id"]
-        if not await sync_to_async(table_in_workspace_of_endpoint)(endpoint, table_id):
-            return [TextContent(type="text", text="Table not in endpoint workspace.")]
-
-        response: Response = await sync_to_async(internal_api_request)(
-            "api:database:rows:item",
-            method="PATCH",
-            path_params={
-                "table_id": name_parameters["id"],
-                "row_id": call_arguments["id"],
-            },
-            user=endpoint.user,
-            data=call_arguments["row"],
-            query_params={"user_field_names": "true"},
-        )
-
-        return [TextContent(type="text", text=response.content)]
-
-
-class DeleteRowMcpTool(MCPTool):
-    type = "delete_table_row"
-    name = "delete_table_row"
+class CreateRowsMcpTool(MCPTool):
+    type = "create_rows"
+    name = "create_rows"
 
     async def list(self, endpoint):
         from mcp import Tool
@@ -226,52 +77,161 @@ class DeleteRowMcpTool(MCPTool):
         return [
             Tool(
                 name=self.name,
-                description=f"Delete an existing row/record from the table of the provided "
-                f"`table_id`.",
+                description=(
+                    "Create one or more rows in a table. "
+                    "Call get_table_schema first to learn the field names and types."
+                ),
                 inputSchema={
                     "type": "object",
                     "properties": {
                         "table_id": {
                             "type": "integer",
-                            "description": "The ID of the table where to delete the "
-                            "row/record from.",
+                            "description": "The ID of the table to create rows in.",
                         },
-                        "id": {
-                            "type": "integer",
-                            "description": "The ID of the row that must be deleted.",
+                        "rows": {
+                            "type": "array",
+                            "description": (
+                                "List of rows to create. Each row is an object "
+                                "mapping field name to value."
+                            ),
+                            "items": {"type": "object"},
                         },
                     },
-                    "required": ["table_id", "id"],
+                    "required": ["table_id", "rows"],
                 },
             )
         ]
 
-    async def call(
-        self,
-        endpoint,
-        name,
-        name_parameters,
-        call_arguments,
-    ):
+    async def call(self, endpoint, call_arguments):
         from mcp.types import TextContent
 
-        table_id = call_arguments["table_id"]
-        if not await sync_to_async(table_in_workspace_of_endpoint)(endpoint, table_id):
-            return [TextContent(type="text", text="Table not in endpoint workspace.")]
+        try:
+            created = await sync_to_async(services.create_rows)(
+                endpoint.user,
+                endpoint.workspace,
+                call_arguments["table_id"],
+                call_arguments["rows"],
+            )
+            return [TextContent(type="text", text=json.dumps(created))]
+        except Table.DoesNotExist:
+            return [
+                TextContent(
+                    type="text",
+                    text="Table not found or not in endpoint workspace.",
+                )
+            ]
+        except ValueError as e:
+            return [TextContent(type="text", text=f"Invalid field name: {e}")]
+        except Exception as e:
+            return [TextContent(type="text", text=f"Error: {e}")]
 
-        response: Response = await sync_to_async(internal_api_request)(
-            "api:database:rows:item",
-            method="DELETE",
-            path_params={
-                "table_id": table_id,
-                "row_id": call_arguments["id"],
-            },
-            user=endpoint.user,
-        )
 
-        content = (
-            "successfully deleted"
-            if response.status_code == HTTP_204_NO_CONTENT
-            else response.content
-        )
-        return [TextContent(type="text", text=content)]
+class UpdateRowsMcpTool(MCPTool):
+    type = "update_rows"
+    name = "update_rows"
+
+    async def list(self, endpoint):
+        from mcp import Tool
+
+        return [
+            Tool(
+                name=self.name,
+                description=(
+                    "Update one or more existing rows in a table. "
+                    "Each row must include 'id' plus the fields to update. "
+                    "Call get_table_schema first to learn the field names."
+                ),
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "table_id": {
+                            "type": "integer",
+                            "description": "The ID of the table containing the rows.",
+                        },
+                        "rows": {
+                            "type": "array",
+                            "description": (
+                                "List of rows to update. Each row must have 'id' "
+                                "plus the field names and their new values."
+                            ),
+                            "items": {"type": "object"},
+                        },
+                    },
+                    "required": ["table_id", "rows"],
+                },
+            )
+        ]
+
+    async def call(self, endpoint, call_arguments):
+        from mcp.types import TextContent
+
+        try:
+            updated = await sync_to_async(services.update_rows)(
+                endpoint.user,
+                endpoint.workspace,
+                call_arguments["table_id"],
+                call_arguments["rows"],
+            )
+            return [TextContent(type="text", text=json.dumps(updated))]
+        except Table.DoesNotExist:
+            return [
+                TextContent(
+                    type="text",
+                    text="Table not found or not in endpoint workspace.",
+                )
+            ]
+        except ValueError as e:
+            return [TextContent(type="text", text=f"Invalid field name: {e}")]
+        except Exception as e:
+            return [TextContent(type="text", text=f"Error: {e}")]
+
+
+class DeleteRowsMcpTool(MCPTool):
+    type = "delete_rows"
+    name = "delete_rows"
+
+    async def list(self, endpoint):
+        from mcp import Tool
+
+        return [
+            Tool(
+                name=self.name,
+                description="Delete one or more rows from a table by ID.",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "table_id": {
+                            "type": "integer",
+                            "description": "The ID of the table to delete rows from.",
+                        },
+                        "row_ids": {
+                            "type": "array",
+                            "items": {"type": "integer"},
+                            "description": "List of row IDs to delete.",
+                        },
+                    },
+                    "required": ["table_id", "row_ids"],
+                },
+            )
+        ]
+
+    async def call(self, endpoint, call_arguments):
+        from mcp.types import TextContent
+
+        try:
+            await sync_to_async(services.delete_rows)(
+                endpoint.user,
+                endpoint.workspace,
+                call_arguments["table_id"],
+                call_arguments["row_ids"],
+            )
+            return [TextContent(type="text", text="Rows successfully deleted.")]
+        except Table.DoesNotExist:
+            return [
+                TextContent(
+                    type="text",
+                    text="Table not found or not in endpoint workspace.",
+                )
+            ]
+        except Exception as e:
+            return [TextContent(type="text", text=f"Error: {e}")]
