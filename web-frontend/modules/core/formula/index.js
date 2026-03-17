@@ -55,8 +55,7 @@ export const isFormulaValid = (
   formula,
   functions,
   syntaxOnly = true,
-  validationContext = {},
-  localisedInvalidSyntaxMessage = null
+  validationContext = {}
 ) => {
   if (!formula) {
     return { scope: null, valid: true, errors: [] }
@@ -70,12 +69,10 @@ export const isFormulaValid = (
     }
     return { errors: [], valid: true, scope: null }
   } catch (err) {
-    const isReadableError = err?.isHumanReadableError === true
-    const fallbackMessage =
-      localisedInvalidSyntaxMessage || 'Invalid formula syntax'
+    const isReadableError = err?.isNotHumanReadableError !== true
     return {
       valid: false,
-      errors: [isReadableError ? err.message : fallbackMessage],
+      errors: [err.message],
       scope: isReadableError ? 'human' : 'internal',
     }
   }

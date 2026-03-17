@@ -1,4 +1,14 @@
-export class BaserowFormulaParserError extends Error {
+/**
+ * A base class for errors that are meant to be hidden to the user. These errors
+ * don't have a human-readable message that can be directly shown to the user,
+ * and contain technical info about the formula parser or runtime
+ */
+export class BaseNotHumanReadableError extends Error {
+  isNotHumanReadableError = true
+}
+
+
+export class BaserowFormulaParserError extends BaseNotHumanReadableError {
   constructor(offendingSymbol, line, character, message) {
     super()
     this.offendingSymbol = offendingSymbol
@@ -8,23 +18,15 @@ export class BaserowFormulaParserError extends Error {
   }
 }
 
-export class UnknownOperatorError extends Error {
+export class UnknownOperatorError extends BaseNotHumanReadableError {
   constructor(operatorName) {
     super()
     this.operatorName = operatorName
   }
 }
 
-/**
- * A base class for errors that are meant to be shown to the user. These errors
- * should have a human-readable message that can be directly shown to the user,
- * and should not contain any technical info about the formula parser or runtime
- */
-export class BaseHumanReadableError extends Error {
-  isHumanReadableError = true
-}
 
-export class InvalidNumberOfArguments extends BaseHumanReadableError {
+export class InvalidNumberOfArguments extends Error {
   constructor(formulaFunctionType, minArgs, maxArgs = null) {
     super()
     this.formulaFunctionType = formulaFunctionType
@@ -55,14 +57,14 @@ export class InvalidNumberOfArguments extends BaseHumanReadableError {
   }
 }
 
-export class InvalidFormulaType extends BaseHumanReadableError {
+export class InvalidFormulaType extends Error {
   constructor(message) {
     super()
     this.message = message
   }
 }
 
-export class InvalidFormulaArgumentType extends BaseHumanReadableError {
+export class InvalidFormulaArgumentType extends Error {
   constructor(formulaFunctionType, arg) {
     super()
     this.formulaFunctionType = formulaFunctionType
@@ -70,7 +72,7 @@ export class InvalidFormulaArgumentType extends BaseHumanReadableError {
   }
 }
 
-export class InvalidFormulaArgument extends BaseHumanReadableError {
+export class InvalidFormulaArgument extends Error {
   constructor(arg, message) {
     super()
     this.arg = arg

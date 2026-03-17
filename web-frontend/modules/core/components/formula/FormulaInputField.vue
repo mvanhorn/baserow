@@ -14,7 +14,8 @@
     </div>
 
     <FormulaInputErrorContext
-      v-if="isFocused && !readOnly && isFormulaInvalid"
+      v-if="isFocused && !readOnly"
+      v-show="isFormulaInvalid"
       ref="formulaInputErrorContext"
       :formula-error-context="formulaErrorContext"
       @mousedown="onContextMouseDown"
@@ -477,8 +478,7 @@ export default {
         formula,
         functions,
         false,
-        this.validationContext,
-        this.$t('formulaInputField.invalidSyntax')
+        this.validationContext
       )
       this.isFormulaInvalid = !validationResult.valid
       if (this.isFormulaInvalid) {

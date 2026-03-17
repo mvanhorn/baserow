@@ -8,7 +8,9 @@
   >
     <Alert type="error">
       <template #title>{{ formulaErrorContext.title }}</template>
-      <p>{{ formulaErrorContext.message }}</p>
+      <div>
+        <p :title="isHuman ? '' : formulaErrorContext.message">{{ message }}</p>
+      </div>
     </Alert>
   </Context>
 </template>
@@ -23,6 +25,16 @@ export default {
     formulaErrorContext: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    isHuman() {
+      return this.formulaErrorContext.scope === 'human'
+    },
+    message() {
+      return this.isHuman
+        ? this.formulaErrorContext.message
+        : this.$t('formulaInputField.invalidSyntax')
     },
   },
   methods: {
